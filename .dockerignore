@@ -1,0 +1,15 @@
+target/
+!.grateful-dead/
+.idea/
+.git/
+.gitignore
+*.log
+.DS_Store
+Dockerfile
+docker-compose.yml
+.env
+.env.local
+pom.xml.releaseBackup
+pom.xml.tag
+pom.xml.next
+release.properties

@@ -1,0 +1,687 @@
+{
+  "info": {
+    "name": "Sandy Stereo Backend API",
+    "description": "Full API collection from login to all resources. Set {{token}} after Login (from response body).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "token", "value": "" },
+    { "key": "userId", "value": "" },
+    { "key": "profileId", "value": "" },
+    { "key": "courseId", "value": "" },
+    { "key": "eventId", "value": "" },
+    { "key": "classId", "value": "" },
+    { "key": "enrollmentId", "value": "" },
+    { "key": "admissionId", "value": "" },
+    { "key": "paymentId", "value": "" },
+    { "key": "instructorCourseId", "value": "" },
+    { "key": "userRoleId", "value": "" },
+    { "key": "siteSettingId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@example.com\",\n  \"password\": \"yourSecurePassword\",\n  \"roles\": [\"student\"]\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/register"
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.token) { pm.collectionVariables.set('token', json.token); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@example.com\",\n  \"password\": \"yourSecurePassword\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "List users",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/users"
+          }
+        },
+        {
+          "name": "Get user by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/users/{{userId}}"
+          }
+        },
+        {
+          "name": "Delete user",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/users/{{userId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profiles",
+      "item": [
+        {
+          "name": "List profiles",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/profiles"
+          }
+        },
+        {
+          "name": "Get profile by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/profiles/{{profileId}}"
+          }
+        },
+        {
+          "name": "Create profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": { \"id\": \"{{userId}}\" },\n  \"fullName\": \"John Doe\",\n  \"avatarUrl\": \"https://example.com/avatar.png\"\n}"
+            },
+            "url": "{{baseUrl}}/api/profiles"
+          }
+        },
+        {
+          "name": "Update profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{profileId}}\",\n  \"user\": { \"id\": \"{{userId}}\" },\n  \"fullName\": \"John Doe Updated\",\n  \"avatarUrl\": \"https://example.com/avatar2.png\"\n}"
+            },
+            "url": "{{baseUrl}}/api/profiles/{{profileId}}"
+          }
+        },
+        {
+          "name": "Delete profile",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/profiles/{{profileId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Courses",
+      "item": [
+        {
+          "name": "List courses",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/courses"
+          }
+        },
+        {
+          "name": "Get course by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/courses/{{courseId}}"
+          }
+        },
+        {
+          "name": "Create course",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Guitar\",\n  \"description\": \"Learn acoustic and electric guitar.\",\n  \"imageUrl\": \"https://example.com/guitar.jpg\",\n  \"level\": \"Intermediate\",\n  \"duration\": \"12 weeks\",\n  \"isActive\": true,\n  \"googleFormLink\": \"https://forms.google.com/...\",\n  \"whatsappNumber\": \"+91...\",\n  \"upiPrice\": 2999.00\n}"
+            },
+            "url": "{{baseUrl}}/api/courses"
+          }
+        },
+        {
+          "name": "Update course",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{courseId}}\",\n  \"title\": \"Guitar Updated\",\n  \"description\": \"Updated description\",\n  \"level\": \"Intermediate\",\n  \"isActive\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/courses/{{courseId}}"
+          }
+        },
+        {
+          "name": "Delete course",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/courses/{{courseId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "List events",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/events"
+          }
+        },
+        {
+          "name": "Get event by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/events/{{eventId}}"
+          }
+        },
+        {
+          "name": "Create event",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Annual Concert\",\n  \"description\": \"Year-end performance\",\n  \"eventDate\": \"2025-12-31T18:00:00+05:30\",\n  \"bannerUrl\": \"https://example.com/banner.jpg\",\n  \"googleFormLink\": \"https://forms.google.com/...\",\n  \"isActive\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/events"
+          }
+        },
+        {
+          "name": "Update event",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{eventId}}\",\n  \"name\": \"Annual Concert Updated\",\n  \"eventDate\": \"2025-12-31T18:00:00+05:30\",\n  \"isActive\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/events/{{eventId}}"
+          }
+        },
+        {
+          "name": "Delete event",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/events/{{eventId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Classes",
+      "item": [
+        {
+          "name": "List classes",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/classes"
+          }
+        },
+        {
+          "name": "Get class by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/classes/{{classId}}"
+          }
+        },
+        {
+          "name": "Create class",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"course\": { \"id\": \"{{courseId}}\" },\n  \"instructor\": { \"id\": \"{{userId}}\" },\n  \"title\": \"Week 1 - Basics\",\n  \"scheduledAt\": \"2025-03-01T10:00:00+05:30\",\n  \"meetLink\": \"https://meet.google.com/...\"\n}"
+            },
+            "url": "{{baseUrl}}/api/classes"
+          }
+        },
+        {
+          "name": "Update class",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{classId}}\",\n  \"course\": { \"id\": \"{{courseId}}\" },\n  \"title\": \"Week 1 - Basics Updated\",\n  \"scheduledAt\": \"2025-03-01T10:00:00+05:30\",\n  \"meetLink\": \"https://meet.google.com/...\"\n}"
+            },
+            "url": "{{baseUrl}}/api/classes/{{classId}}"
+          }
+        },
+        {
+          "name": "Delete class",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/classes/{{classId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Enrollments",
+      "item": [
+        {
+          "name": "List enrollments",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/enrollments"
+          }
+        },
+        {
+          "name": "Get enrollment by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/enrollments/{{enrollmentId}}"
+          }
+        },
+        {
+          "name": "Create enrollment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": { \"id\": \"{{userId}}\" },\n  \"course\": { \"id\": \"{{courseId}}\" }\n}"
+            },
+            "url": "{{baseUrl}}/api/enrollments"
+          }
+        },
+        {
+          "name": "Update enrollment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{enrollmentId}}\",\n  \"user\": { \"id\": \"{{userId}}\" },\n  \"course\": { \"id\": \"{{courseId}}\" }\n}"
+            },
+            "url": "{{baseUrl}}/api/enrollments/{{enrollmentId}}"
+          }
+        },
+        {
+          "name": "Delete enrollment",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/enrollments/{{enrollmentId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admissions",
+      "item": [
+        {
+          "name": "List admissions",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/admissions"
+          }
+        },
+        {
+          "name": "Get admission by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/admissions/{{admissionId}}"
+          }
+        },
+        {
+          "name": "Create admission",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"course\": { \"id\": \"{{courseId}}\" },\n  \"user\": { \"id\": \"{{userId}}\" },\n  \"applicantName\": \"Jane Doe\",\n  \"dateOfBirth\": \"2010-05-15\",\n  \"gender\": \"Female\",\n  \"fatherName\": \"John Doe\",\n  \"motherName\": \"Jane Sr\",\n  \"email\": \"jane@example.com\",\n  \"phoneNumber\": \"+919876543210\",\n  \"address\": \"123 Street, City\",\n  \"photoUrl\": \"https://example.com/photo.jpg\",\n  \"classMode\": \"offline\",\n  \"preferredBatch\": \"Morning\",\n  \"referralCode\": \"REF123\",\n  \"status\": \"pending\"\n}"
+            },
+            "url": "{{baseUrl}}/api/admissions"
+          }
+        },
+        {
+          "name": "Update admission",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{admissionId}}\",\n  \"course\": { \"id\": \"{{courseId}}\" },\n  \"applicantName\": \"Jane Doe\",\n  \"dateOfBirth\": \"2010-05-15\",\n  \"gender\": \"Female\",\n  \"fatherName\": \"John Doe\",\n  \"motherName\": \"Jane Sr\",\n  \"email\": \"jane@example.com\",\n  \"phoneNumber\": \"+919876543210\",\n  \"address\": \"123 Street, City\",\n  \"classMode\": \"offline\",\n  \"status\": \"approved\"\n}"
+            },
+            "url": "{{baseUrl}}/api/admissions/{{admissionId}}"
+          }
+        },
+        {
+          "name": "Delete admission",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/admissions/{{admissionId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "List payments",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/payments"
+          }
+        },
+        {
+          "name": "Get payment by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/payments/{{paymentId}}"
+          }
+        },
+        {
+          "name": "Create payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": { \"id\": \"{{userId}}\" },\n  \"course\": { \"id\": \"{{courseId}}\" },\n  \"amount\": 2999.00,\n  \"status\": \"pending\",\n  \"transactionReference\": \"TXN123456\"\n}"
+            },
+            "url": "{{baseUrl}}/api/payments"
+          }
+        },
+        {
+          "name": "Update payment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{paymentId}}\",\n  \"user\": { \"id\": \"{{userId}}\" },\n  \"course\": { \"id\": \"{{courseId}}\" },\n  \"amount\": 2999.00,\n  \"status\": \"completed\",\n  \"transactionReference\": \"TXN123456\"\n}"
+            },
+            "url": "{{baseUrl}}/api/payments/{{paymentId}}"
+          }
+        },
+        {
+          "name": "Delete payment",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/payments/{{paymentId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Instructor Courses",
+      "item": [
+        {
+          "name": "List instructor courses",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/instructorcourses"
+          }
+        },
+        {
+          "name": "Get instructor course by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/instructorcourses/{{instructorCourseId}}"
+          }
+        },
+        {
+          "name": "Create instructor course",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"instructor\": { \"id\": \"{{userId}}\" },\n  \"course\": { \"id\": \"{{courseId}}\" }\n}"
+            },
+            "url": "{{baseUrl}}/api/instructorcourses"
+          }
+        },
+        {
+          "name": "Update instructor course",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{instructorCourseId}}\",\n  \"instructor\": { \"id\": \"{{userId}}\" },\n  \"course\": { \"id\": \"{{courseId}}\" }\n}"
+            },
+            "url": "{{baseUrl}}/api/instructorcourses/{{instructorCourseId}}"
+          }
+        },
+        {
+          "name": "Delete instructor course",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/instructorcourses/{{instructorCourseId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Roles",
+      "item": [
+        {
+          "name": "List user roles",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/userroles"
+          }
+        },
+        {
+          "name": "Get user role by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/userroles/{{userRoleId}}"
+          }
+        },
+        {
+          "name": "Create user role",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": { \"id\": \"{{userId}}\" },\n  \"role\": \"instructor\"\n}"
+            },
+            "url": "{{baseUrl}}/api/userroles"
+          }
+        },
+        {
+          "name": "Update user role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{userRoleId}}\",\n  \"user\": { \"id\": \"{{userId}}\" },\n  \"role\": \"admin\"\n}"
+            },
+            "url": "{{baseUrl}}/api/userroles/{{userRoleId}}"
+          }
+        },
+        {
+          "name": "Delete user role",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/userroles/{{userRoleId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Site Settings",
+      "item": [
+        {
+          "name": "List site settings",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/sitesettings"
+          }
+        },
+        {
+          "name": "Get site setting by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/sitesettings/{{siteSettingId}}"
+          }
+        },
+        {
+          "name": "Create site setting",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"settingKey\": \"contact_email\",\n  \"settingValue\": \"contact@sandystereo.com\"\n}"
+            },
+            "url": "{{baseUrl}}/api/sitesettings"
+          }
+        },
+        {
+          "name": "Update site setting",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{siteSettingId}}\",\n  \"settingKey\": \"contact_email\",\n  \"settingValue\": \"updated@sandystereo.com\"\n}"
+            },
+            "url": "{{baseUrl}}/api/sitesettings/{{siteSettingId}}"
+          }
+        },
+        {
+          "name": "Delete site setting",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/sitesettings/{{siteSettingId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/actuator/health"
+      }
+    }
+  ]
+}

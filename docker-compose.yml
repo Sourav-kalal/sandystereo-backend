@@ -1,0 +1,11 @@
+services:
+  backend:
+    build: .
+    container_name: sandystereo-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${DATABASE_URL}
+      SPRING_DATASOURCE_USERNAME: ${DATABASE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DATABASE_PASSWORD}
+      APP_JWT_SECRET: ${JWT_SECRET:-VGhpc0lzQURldk9ubHlKZXd0U2VjcmV0S2VlcEl0TG9uZ0FuZFNlY3VyZQ==}
